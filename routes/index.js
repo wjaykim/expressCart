@@ -366,8 +366,8 @@ router.get('/product/:id', async (req, res) => {
 router.get('/cart/retrieve', async (req, res, next) => {
     const db = req.app.db;
 
-    // Get the cart from the DB using the session id
-    const cart = await db.cart.findOne({ sessionId: getId(req.session.id) });
+    // Get the cart from the DB using the email
+    const cart = await db.cart.findOne({ email: req.session.customerEmail || 'shared' });
 
     res.status(200).json({ cart: cart.cart });
 });
@@ -428,7 +428,7 @@ router.post('/product/updatecart', async (req, res, next) => {
     updateSubscriptionCheck(req, res);
 
     // Update cart to the DB
-    await db.cart.updateOne({ sessionId: req.session.id }, {
+    await db.cart.updateOne({ email: req.session.customerEmail || 'shared' }, {
         $set: { cart: req.session.cart }
     });
 
@@ -453,7 +453,7 @@ router.post('/product/removefromcart', async (req, res, next) => {
     }
 
     // Update cart in DB
-    await db.cart.updateOne({ sessionId: req.session.id }, {
+    await db.cart.updateOne({ email: req.session.customerEmail || 'shared' }, {
         $set: { cart: req.session.cart }
     });
     // update total cart
@@ -602,7 +602,7 @@ router.post('/product/addtocart', async (req, res, next) => {
     }
 
     // Update cart to the DB
-    await db.cart.updateOne({ sessionId: req.session.id }, {
+    await db.cart.updateOne({ email: req.session.customerEmail || 'shared' }, {
         $set: { cart: req.session.cart }
     }, { upsert: true });
 
@@ -814,6 +814,10 @@ router.get('/:page?', async (req, res, next) => {
     const db = req.app.db;
     const config = req.app.config;
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+
+    db.cart.findOne({ email: req.session.customerEmail || 'shared' }).then((cart) => {
+        req.session.cart = cart.cart;
+    });
 
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){

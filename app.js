@@ -15,7 +15,6 @@ const MongoStore = require('connect-mongodb-session')(session);
 const numeral = require('numeral');
 const helmet = require('helmet');
 const colors = require('colors');
-const cron = require('node-cron');
 const crypto = require('crypto');
 const common = require('./lib/common');
 const { runIndexing } = require('./lib/indexing');
@@ -482,20 +481,6 @@ initDb(config.databaseConnectionString, async (err, db) => {
     app.db = db;
     app.config = config;
     app.port = app.get('port');
-
-    // Fire up the cron job to clear temp held stock
-    cron.schedule('*/1 * * * *', async () => {
-        const validSessions = await db.sessions.find({}).toArray();
-        const validSessionIds = [];
-        _.forEach(validSessions, (value) => {
-            validSessionIds.push(value._id);
-        });
-
-        // Remove any invalid cart holds
-        await db.cart.deleteMany({
-            sessionId: { $nin: validSessionIds }
-        });
-    });
 
     // Set trackStock for testing
     if(process.env.NODE_ENV === 'test'){

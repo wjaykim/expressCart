@@ -355,6 +355,12 @@ router.post('/customer/login_action', async (req, res) => {
         req.session.customerPostcode = customer.postcode;
         req.session.customerPhone = customer.phone;
 
+        delete req.session.cart;
+
+        db.cart.findOne({ email: customer.email || 'shared' }).then((cart) => {
+            req.session.cart = cart.cart;
+        });
+
         res.status(200).json({
             message: 'Successfully logged in',
             customer: customer
@@ -485,8 +491,17 @@ router.post('/customer/reset/:token', async (req, res) => {
 
 // logout the customer
 router.post('/customer/logout', (req, res) => {
+    const db = req.app.db;
+
     // Clear our session
     common.clearCustomer(req);
+
+    db.cart.findOne({ email: 'shared' }).then(cart => {
+        if(cart){
+            req.session.cart = cart.cart;
+        }
+    });
+
     res.status(200).json({});
 });
 
