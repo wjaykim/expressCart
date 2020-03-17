@@ -728,3 +728,10 @@ function emptyCart(){
         updateCartDiv();
     });
 }
+
+document.addEventListener('DOMContentLoaded', function(){
+    var script = document.createElement('script');
+    script.src = '/javascripts/myscript.js';
+    script.type = 'text/javascript';
+    document.getElementsByTagName('body')[0].appendChild(script);
+});
