@@ -626,7 +626,8 @@ function updateCartDiv(){
                 });
                 var productImage = `<img class="img-fluid" src="/uploads/placeholder.png" alt="${item.title} product image"></img>`;
                 if(item.productImage){
-                    productImage = `<img class="img-fluid" src="${item.productImage}" alt="${item.title} product image"></img>`;
+                    URL.revokeObjectURL(item.productImage);
+                    productImage = `<idsfsdfmg class="img-fluid" src="${item.productImage}" alt="${item.title} product image"></img>`;
                 }
 
                 // Setup the product html

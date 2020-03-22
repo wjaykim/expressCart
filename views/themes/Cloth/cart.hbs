@@ -7,13 +7,12 @@
                 <div class="p-2 cart-product">
                     <div class="row h-200">
                         <div class="col-4 col-md-3 no-pad-left">
-                            {{! 여기 }}
                             {{#if productImage}}
                             <div class="js-image-lazyloading" style="display: none" data-class="img-fluid"
-                                data-src="{{this.productImage}}" data-alt="{{this.title}} product image"></div>
+                                data-src="{{this.productImage}}?no-cache" data-alt="{{this.title}} product image">
+                            </div>
                             {{else}}
-                            <div class="js-image-lazyloading" style="display: none" data-class="img-fluid"
-                                data-src="/uploads/placeholder.png" data-alt="{{this.title}} product image"></div>
+                            <img class="img-fluid" src="/uploads/placeholder.png" alt="{{this.title}} product image">
                             {{/if}}
                         </div>
                         <div class="col-8 col-md-9">
