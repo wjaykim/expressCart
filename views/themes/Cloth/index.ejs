@@ -1,0 +1,59 @@
+<%- include('../../layouts/layout-header.ejs') %>
+<%- include('./front-menu.ejs') %>
+<div class="productsWrapper col-sm-12 col-md-8 offset-md-2">
+
+    <% if (locals.filtered) { %>
+        <div class="product-layout product-results col-sm-12">
+            <% if (locals.paginateUrl === 'category') { %>
+                <h1><%= __('Category') %>: <strong><%= locals.searchTerm %></strong></h1>
+            <% } else { %>
+                <h1><%= __('Search results') %>: <strong><%= locals.searchTerm %></strong></h1>
+            <% } %>
+        </div>
+    <% } %>
+    <div class="row product-layout">
+        <% if (results.length === 0) { %>
+            <div class="col-sm-12">
+                <p class="text-danger"><%= __('No products found') %></p>
+            </div>
+        <% } %>
+        <% results.forEach(result => { %>
+            <div class="<%= helpers.perRowClass(config.productsPerRow) %>">
+                <div class="thumbnail">
+                    <div class="product-wrapper">
+                        <a href="/product/<%= result.productPermaLink || result._id %>">
+                            <div class="vertical-center img-thumbnail">
+                                <% if (result.productImage) { %>
+                                    <img class="img-fluid" src="<%= result.productImage %>" alt="...">
+                                <% } else { %>
+                                    <img class="img-fluid" src="/uploads/placeholder.png" alt="...">
+                                <% } %>
+                            </div>
+                            <h3 class="product-title product-title-home top-pad-10">
+                                <%= result.productTitle %>
+                            </h3>
+                        </a>
+                    </div>
+                    <h3 class="product-price mp-0 text-center">
+                        <%= helpers.currencySymbol(config.currencySymbol) + helpers.formatAmount(result.productPrice) %>
+                    </h3>
+                    <p class="text-center">
+                        <a class="btn btn-primary add-to-cart" data-id="<%= result._id %>" data-link="<%= result.productPermaLink %>"
+                            data-has-options="<%= helpers.checkProductOptions(result.productOptions) %>"
+                            role="button"><%= __('Add to cart') || 'Add to cart' %></a>
+                    </p>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+<input type="hidden" id="productsPerPage" value="<%= productsPerPage %>">
+<input type="hidden" id="pageNum" value="<%= pageNum %>">
+<input type="hidden" id="totalProductCount" value="<%= totalProductCount %>">
+<input type="hidden" id="paginateUrl" value="<%= paginateUrl %>">
+<input type="hidden" id="searchTerm" value="<%= locals.searchTerm %>">
+<div class="col-md-12">
+    <div id="pager" class="d-flex justify-content-center"></div>
+</div>
+
+<%- include('../../layouts/layout-footer.ejs') %>

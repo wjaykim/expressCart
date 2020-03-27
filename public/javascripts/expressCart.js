@@ -78,6 +78,7 @@ $(document).ready(function (){
         deleteFromCart($(e.target));
     });
 
+    /*
     if($('#pager').length){
         var pageNum = $('#pageNum').val();
         var pageLen = $('#productsPerPage').val();
@@ -110,6 +111,7 @@ $(document).ready(function (){
             });
         }
     }
+    */
 
     $('#customerLogout').on('click', function(e){
         $.ajax({
@@ -624,10 +626,10 @@ function updateCartDiv(){
                     }
                     optionIndex++;
                 });
-                var productImage = `<img class="img-fluid" src="/uploads/placeholder.png" alt="${item.title} product image"></img>`;
+                var productImage = `<div class="js-image-lazyloading" data-class="img-fluid" data-src="/uploads/placeholder.png" data-alt="${item.title} product image"></div>`;
                 if(item.productImage){
                     URL.revokeObjectURL(item.productImage);
-                    productImage = `<idsfsdfmg class="img-fluid" src="${item.productImage}" alt="${item.title} product image"></img>`;
+                    productImage = `<div class="js-image-lazyloading" data-class="img-fluid" data-src="${item.productImage}" data-alt="${item.title} product image"></div>`;
                 }
 
                 // Setup the product html

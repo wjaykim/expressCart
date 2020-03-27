@@ -384,6 +384,9 @@ router.post('/product/updatecart', async (req, res, next) => {
         return;
     }
 
+    console.log(req.session.cart);
+    console.log(cartItem.cartId);
+
     // Calculate the quantity to update
     let productQuantity = cartItem.quantity ? cartItem.quantity : 1;
     if(typeof productQuantity === 'string'){
@@ -652,7 +655,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
                 return;
             }
 
-            res.render(`${config.themeViews}index`, {
+            res.render(`${config.themeViews}index.ejs`, {
                 title: 'Results',
                 results: results.data,
                 filtered: true,
@@ -707,7 +710,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
                 return;
             }
 
-            res.render(`${config.themeViews}index`, {
+            res.render(`${config.themeViews}indexe.ejs`, {
                 title: `Category: ${searchTerm}`,
                 results: results.data,
                 filtered: true,
@@ -787,7 +790,7 @@ router.get('/page/:pageNum', (req, res, next) => {
                 return;
             }
 
-            res.render(`${config.themeViews}index`, {
+            res.render(`${config.themeViews}index.ejs`, {
                 title: 'Shop',
                 results: results.data,
                 session: req.session,
@@ -815,9 +818,10 @@ router.get('/:page?', async (req, res, next) => {
     const config = req.app.config;
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
-    db.cart.findOne({ email: req.session.customerEmail || 'shared' }).then((cart) => {
+    const cart = await db.cart.findOne({ email: req.session.customerEmail || 'shared' });
+    if(cart){
         req.session.cart = cart.cart;
-    });
+    }
 
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
@@ -832,7 +836,7 @@ router.get('/:page?', async (req, res, next) => {
                     return;
                 }
 
-                res.render(`${config.themeViews}index`, {
+                res.render(`${config.themeViews}index.ejs`, {
                     title: `${config.cartTitle} - Shop`,
                     theme: config.theme,
                     results: results.data,

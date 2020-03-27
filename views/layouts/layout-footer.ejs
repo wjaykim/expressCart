@@ -1,0 +1,58 @@
+</div>
+</div>
+<input type="hidden" id="input_notify_message" value="<%= locals.message %>">
+<input type="hidden" id="input_notify_messageType" value="<%= locals.messageType %>">
+<input type="hidden" id="cartCheckout" value="<%= locals.checkout %>">
+<input type="hidden" id="cartTheme" value="<%= locals.config.theme %>">
+<input type="hidden" id="currencySymbol" value="<%= locals.config.currencySymbol %>">
+<% if (locals.config.maxQuantity) { %>
+    <input type="hidden" id="maxQuantity"
+    value="<%= locals.config.maxQuantity %>">
+<% } %>
+<div id="notify_message"></div>
+<% if (showFooter) { %>
+    <div class="footer">
+        <div class="d-flex h-100">
+            <div class="col-12 align-self-center">
+                <% if (!locals.config.footerHtml) { %>
+                    <h5 class="text-center">Powered by expressCart</h5>
+                <% } else { %>
+                     <%- locals.config.footerHtml %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+<% } %>
+<script src="/javascripts/pushy.min.js"></script>
+<% if (locals.admin) { %>
+    <div class="modal fade" id="globalSearchModal" tabindex="-1" role="dialog" aria-labelledby="globalSearchModal"
+    aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content global-search-modal-content">
+                <div class="modal-header global-search-modal-header"></div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group global-search-form">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text search-input-addon"
+                                        for="global-search-value"><%- helpers.feather('search') %></label>
+                                </div>
+                                <input type="text" class="form-control form-control-lg" id="global-search-value">
+                            </div>
+                        </div>
+                    </form>
+                    <ul class="list-group col-12 invisible" id="global-search-results"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<%- include('../partials/confirmModal.ejs') %>
+<script>
+    feather.replace();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<div class="card top-marg-15 bottom-marg-15">
+  <div class="card-body cart-body">
+      <h5 class="card-title"><%= __('Cart contents') %></h5>
+      <div class="cartBodyWrapper">
+        <% Object.keys(session.cart || {}).forEach(function(key, i, arr) { %>
+          <div class="d-flex flex-row bottom-pad-15">
+            <div class="p-2 cart-product">
+              <div class="row h-200">
+                <div class="col-4 col-md-3 no-pad-left">
+                <% if (session.cart[key].productImage) { %>
+                    <div class="js-image-lazyloading" style="display: none" data-class="img-fluid"
+                        data-src="<%= session.cart[key].productImage %>" data-alt="<%= session.cart[key].title %> product image">
+                    </div>
+                <% } else { %>
+                    <img class="img-fluid" src="/uploads/placeholder.png" alt="<%= session.cart[key].title %> product image">
+                <% } %>
+                </div>
+                <div class="col-8 col-md-9">
+                    <div class="row">
+                        <div class="col-12 no-pad-left mt-md-4">
+                            <h6><a href="/product/<%= session.cart[key].link %>"><%= session.cart[key].title %></a></h6>
+                            <% Object.values(session.cart[key].options).forEach((opt, i, arr) => { %>
+                                <% if (i === arr.length - 1)  { %>
+                                    <strong><%= helpers.upperFirst(opt.name) %></strong>: <%= opt.value %>
+                                <% } else { %>
+                                    <strong><%= helpers.upperFirst(opt.name) %>:</strong> <%= opt.value %>  /
+                                <% } %>
+                            <% }) %>
+                        </div>
+                        <% if (!locals.cartReadOnly) { %>
+                            <div class="col-12 col-md-6 no-pad-left mb-2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-primary btn-qty-minus" type="button">-</button>
+                                    </div>
+                                    <input type="number" class="form-control cart-product-quantity text-center"
+                                        data-cartid="<%= key %>" data-id="<%= session.cart[key].id %>" maxlength="2"
+                                        value="<%= session.cart[key].quantity %>">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary btn-qty-add" type="button">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 col-md-2 no-pad-left">
+                                <button class="btn btn-danger btn-delete-from-cart" data-id="<%= key %>"
+                                    data-cartid="<%= key %>"
+                                    type="button"><%- helpers.feather('trash-2') %></button>
+                            </div>
+                        <% } else { %>
+                            <div class="col-12 col-md-8 no-pad-left mb-2"></div>
+                        <% } %>
+                        <div class="col-8 col-md-4 align-self-center text-right">
+                            <strong
+                                class="my-auto"><%= helpers.currencySymbol( ) %> <%= helpers.currencySymbol(locals.config.currencySymbol) %><%= helpers.formatAmount(session.cart[key].totalItemPrice) %></strong>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <div class="cartTotalsWrapper">
+        <% if (locals.session.cart) { %>
+            <div class="d-flex flex-row">
+              <div class="cart-contents-shipping col-md-12 no-pad-right">
+                <% if (locals.session.totalCartShipping > 0) { %>
+                    <div class="text-right">
+                        <%= locals.session.shippingMessage %>: <strong
+                            id="shipping-amount"><%= helpers.currencySymbol(locals.config.currencySymbol) %><%= helpers.formatAmount(locals.session.totalCartShipping) %></strong>
+                    </div>
+                <% } else { %>
+                    <div class="text-right">
+                        <span id="shipping-amount"><%= locals.session.shippingMessage %></span>
+                    </div>
+                <% } %>
+                <% if (locals.session.totalCartDiscount > 0) { %>
+                    <div class="text-right">
+                        Discount: <strong
+                            id="discount-amount"><%= helpers.currencySymbol(locals.config.currencySymbol) %><%= helpers.formatAmount(locals.session.totalCartDiscount) %></strong>
+                    </div>
+                <% } %>
+                <div class="text-right">
+                    Total:
+                    <strong
+                        id="total-cart-amount"><%= helpers.currencySymbol(locals.config.currencySymbol) %><%= helpers.formatAmount(locals.session.totalCartAmount) %></strong>
+                </div>
+              </div>
+          </div>
+        <% } else { %>
+            <div id="cart-empty" class="d-flex flex-row">
+                <div class="cart-contents-shipping col-md-12 no-pad-left">
+                    Cart empty
+                </div>
+            </div>
+        <% } %>
+      </div>
+  </div>
+</div>
