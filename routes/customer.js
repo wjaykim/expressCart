@@ -333,13 +333,12 @@ router.post('/customer/login_action', async (req, res) => {
     }
     // we have a customer under that email so we compare the password
     bcrypt.compare(req.body.loginPassword, customer.password)
-    .then((result) => {
+    .then(async (result) => {
         if(!result){
             // password is not correct
-            res.status(400).json({
+            return res.status(400).json({
                 message: 'Access denied. Check password and try again.'
             });
-            return;
         }
 
         // Customer login successful
@@ -355,19 +354,19 @@ router.post('/customer/login_action', async (req, res) => {
         req.session.customerPostcode = customer.postcode;
         req.session.customerPhone = customer.phone;
 
-        delete req.session.cart;
+        const cart = await db.cart.findOne({ email: customer.email || 'shared' });
 
-        db.cart.findOne({ email: customer.email || 'shared' }).then((cart) => {
-            req.session.cart = cart.cart;
-        });
+        req.session.cart = cart.cart;
 
-        res.status(200).json({
+        await common.updateTotalCart(req);
+
+        return res.status(200).json({
             message: 'Successfully logged in',
             customer: customer
         });
     })
     .catch((err) => {
-        res.status(400).json({
+        return res.status(400).json({
             message: 'Access denied. Check password and try again.'
         });
     });
@@ -490,19 +489,21 @@ router.post('/customer/reset/:token', async (req, res) => {
 });
 
 // logout the customer
-router.post('/customer/logout', (req, res) => {
+router.post('/customer/logout', async (req, res) => {
     const db = req.app.db;
 
     // Clear our session
     common.clearCustomer(req);
 
-    db.cart.findOne({ email: 'shared' }).then(cart => {
-        if(cart){
-            req.session.cart = cart.cart;
-        }
-    });
+    const cart = await db.cart.findOne({ email: 'shared' });
 
-    res.status(200).json({});
+    if(cart){
+        req.session.cart = cart.cart;
+    }
+
+    await common.updateTotalCart(req);
+
+    return res.status(200).json({});
 });
 
 module.exports = router;
