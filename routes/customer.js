@@ -356,7 +356,11 @@ router.post('/customer/login_action', async (req, res) => {
 
         const cart = await db.cart.findOne({ email: customer.email || 'shared' });
 
-        req.session.cart = cart.cart;
+        if(cart){
+            req.session.cart = cart.cart;
+        }else{
+            delete req.session.cart;
+        }
 
         await common.updateTotalCart(req);
 
@@ -499,6 +503,8 @@ router.post('/customer/logout', async (req, res) => {
 
     if(cart){
         req.session.cart = cart.cart;
+    }else{
+        delete req.session.cart;
     }
 
     await common.updateTotalCart(req);
