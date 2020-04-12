@@ -1,9 +1,9 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
-var delay = 0
+var delay = 500;
 
-setTimeout(function() {
-    var script = document.createElement('script')
-    script.src = '/js/myscript-final.js'
-    script.type = 'text/javascript'
-    document.getElementsByTagName('body')[0].appendChild(script)
-}, delay)
+setTimeout(function(){
+    var script = document.createElement('script');
+    script.src = '/javascript/myscript-final.js';
+    script.type = 'text/javascript';
+    document.getElementsByTagName('body')[0].appendChild(script);
+}, delay);
